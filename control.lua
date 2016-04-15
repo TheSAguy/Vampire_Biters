@@ -50,7 +50,6 @@ victims={
 function On_Remove(event)
 
    -- When an entity from the list of valid victims is killed
-
     if victims[event.entity.name]  then
         local victim=event.entity
         local killcount = game.forces.vampire.get_kill_count(victim.name)
@@ -82,7 +81,6 @@ function SpawnVampire(former_entity)
     end
     global.next_group_formation[e.surface.name] = game.tick + 5 * 60 --this sets the timeout for group formation on this surface to be 5 seconds after the last vampire creation
 	
-	
 end
 
 
@@ -92,7 +90,7 @@ function group_pass(event)
     --handle giving the vampires a greater goal
     for surf_name, time in pairs(global.next_group_formation) do
     if time == event.tick then
-        local units = global.last_arisen[ global.next_group_formation[event.tick] ]
+        local units = global.last_arisen[ surf_name ]
         local vamp = units[1]
         group = vamp.surface.create_unit_group{force=vamp.force, position=vamp.position}
         for i =2, #units do
@@ -101,7 +99,7 @@ function group_pass(event)
         group.set_autonomous() --the game will probably use them for building a base or attacking player
         
         --clean up
-       global.last_arisen[ global.next_group_formation[event.tick] ] = nil
+       global.last_arisen[ surf_name ] = nil
        global.next_group_formation[surf_name] = nil 
        if not next(global.next_group_formation) then
            --if there's no non-nil elements in global.next_group_formation then all fights are finished for now and we don't need the on_tick handler for a while
