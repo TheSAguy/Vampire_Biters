@@ -75,9 +75,10 @@ function SpawnVampire(former_entity)
     global.last_arisen = global.last_arisen or {}
     global.last_arisen[e.surface.name] = global.last_arisen[e.surface.name] or {}
     table.insert(global.last_arisen[e.surface.name], new_ent) --prepare for giving group to AI 
-   if not global.next_group_formation then 
+    if not global.next_group_formation then 
          --register the handler which should eventually pass the group if it was not initialized before
          script.on_event(defines.events.on_tick, group_pass)
+         global.next_group_formation=global.next_group_formation 
     end
     global.next_group_formation[e.surface.name] = game.tick + 5 * 60 --this sets the timeout for group formation on this surface to be 5 seconds after the last vampire creation
 	
