@@ -1,4 +1,3 @@
-require "prototypes.projectiles"
 
 
 vampire_den_tint = {r=0, g=0, b=0, a=1}
@@ -18,9 +17,9 @@ big_vampire_tint1 = {r=0.9, g=0.3, b=0.3, a=0.6}
 big_vampire_tint2 = {r=1.0, g=0.3, b=0.8, a=0.95}
 
 
-unit_launching_worm_tint = {r=0, g=0, b=0, a=1}
 
 
+--- DEN ---
 data:extend(
 {
   {
@@ -28,7 +27,7 @@ data:extend(
     name = "vampire-den",
     icon = "__base__/graphics/icons/biter-spawner.png",
     flags = {"placeable-player", "placeable-enemy", "placeable-off-grid", "breaths-air", "not-repairable"},
-    max_health = 6000,
+    max_health = 5000,
     order="b-b-i",
     subgroup="enemies",
     working_sound =
@@ -94,8 +93,8 @@ data:extend(
         probability = 1
       },
     },
-    max_count_of_owned_units = 5,
-    max_friends_around_to_spawn = 10,
+    max_count_of_owned_units = 10,
+    max_friends_around_to_spawn = 20,
 	--max_count_of_owned_units = 25,
     --max_friends_around_to_spawn = 50,
     
@@ -123,7 +122,7 @@ data:extend(
 	
 	
     -- With zero evolution the spawn rate is 5 seconds, with max evolution it is 2 seconds
-    spawning_cooldown = {600, 120},
+    spawning_cooldown = {600, 100},
 	--spawning_cooldown = {300, 120},
     spawning_radius = 10,
     spawning_spacing = 3,
@@ -131,14 +130,14 @@ data:extend(
     max_richness_for_spawn_shift = 100,
     autoplace =
     {
-      --sharpness = 0.1,
-	  sharpness = 0.4, -- default
+      sharpness = 0.04,
+	  --sharpness = 0.4, -- default
       control = "enemy-base",
       order = "b[enemy]-c[vampire-den]",
       richness_multiplier = 0.5, 
 	  --richness_multiplier = 1, -- default
       richness_base = 0,
-      --force = "enemy",
+      --force = "enemy", -- default
 	  force = "vampire",
       peaks =
       {
@@ -163,7 +162,8 @@ data:extend(
         },
         -- increase the size when moving further away
         {
-          influence = 0.5,
+          influence = 0.05,
+		  influence = 0.5, -- default
           noise_layer = "enemy-base",
           noise_octaves_difference = -1.8,
           noise_persistence = 0.5,
@@ -544,146 +544,4 @@ data:extend(
 
   }
 )
-
---[[
---------- Unit Launching Worms...
-
-data:extend(
-{
-  {
-    type = "turret",
-    name = "unit-launching-worm-turret",
-    icon = "__base__/graphics/icons/big-worm.png",
-    flags = {"placeable-player", "placeable-enemy", "not-repairable", "breaths-air"},
-    max_health = 500,
-    order="b-b-g",
-    subgroup="enemies",
-    resistances =
-    {
-      {
-        type = "physical",
-        decrease = 8,
-      },
-      {
-        type = "explosion",
-        decrease = 15,
-        percent = 50,
-      }
-    },
-    healing_per_tick = 0.02,
-    collision_box = {{-1.4, -1.2}, {1.4, 1.2}},
-    selection_box = {{-1.4, -1.2}, {1.4, 1.2}},
-    shooting_cursor_size = 4,
-    rotation_speed = 1,
-    corpse = "unit-launching-worm-corpse",
-    dying_explosion = "blood-explosion-big",
-    dying_sound = make_worm_dying_sounds(1.0),
-    inventory_size = 2,
-    folded_speed = 0.01,
-    folded_animation = worm_folded_animation(big_worm_scale, unit_launching_worm_tint),
-    prepare_range = 25,
-    preparing_speed = 0.025,
-    preparing_animation = worm_preparing_animation(big_worm_scale, unit_launching_worm_tint, "forward"),
-    prepared_speed = 0.015,
-    prepared_animation = worm_prepared_animation(big_worm_scale, unit_launching_worm_tint),
-    starting_attack_speed = 0.03,
-    starting_attack_animation = worm_attack_animation(big_worm_scale, unit_launching_worm_tint, "forward"),
-    starting_attack_sound = make_worm_roars(0.95),
-    ending_attack_speed = 0.03,
-    ending_attack_animation = worm_attack_animation(big_worm_scale, unit_launching_worm_tint, "backward"),
-    folding_speed = 0.015,
-    folding_animation =  worm_preparing_animation(big_worm_scale, unit_launching_worm_tint, "backward"),
-    prepare_range = 30,
-    attack_parameters =
-    {
-      type = "projectile",
-      ammo_category = "rocket",
-      cooldown = 100,
-      range = 40,
-      projectile_creation_distance = 2.1,
-      damage_modifier = 6,
-      ammo_type =
-      {
-        category = "biological",
-        action =
-        {
-          type = "direct",
-          action_delivery =
-          {
-            type = "projectile",
-            projectile = "unit-projectile",
-            starting_speed = 0.5
-          }
-        }
-      },
-	  {
-        category = "biological",
-        action =
-        {
-          type = "direct",
-          action_delivery =
-          {
-            type = "projectile",
-            projectile = "unit-projectile",
-            starting_speed = 0.5
-          }
-        }
-      }
-    },
-    autoplace =
-    {
-      sharpness = 0.3,
-      control = "enemy-base",
-      order = "b[enemy]-a[base]",
-      force = "enemy",
-      peaks =
-      {
-        {
-          influence = -10.0,
-          starting_area_weight_optimal = 1,
-          starting_area_weight_range = 0,
-          starting_area_weight_max_range = 2,
-        },
-        {
-          influence = 0.31,
-          noise_layer = "enemy-base",
-          noise_octaves_difference = -1.8,
-          noise_persistence = 0.5,
-        },
-        {
-          influence = 0.1,
-          noise_layer = "enemy-base",
-          noise_octaves_difference = -1.8,
-          noise_persistence = 0.5,
-          tier_from_start_optimal = 10,
-          tier_from_start_top_property_limit = 10,
-          tier_from_start_max_range = 20,
-        }
-      }
-    }
-  },
-
-
-  {
-    type = "corpse",
-    name = "unit-launching-worm-corpse",
-    icon = "__base__/graphics/icons/big-worm-corpse.png",
-    selection_box = {{-0.8, -0.8}, {0.8, 0.8}},
-    selectable_in_game = false,
-    subgroup="corpses",
-    order = "c[corpse]-c[worm]-d[big]",
-    flags = {"placeable-neutral", "placeable-off-grid", "building-direction-8-way", "not-repairable", "not-on-map"},
-    dying_speed = 0.01,
-    final_render_layer = "corpse",
-    animation = worm_die_animation(big_worm_scale, unit_launching_worm_tint)
-  },
-
-}
-)
-]]
-
-
-
-
-
 
