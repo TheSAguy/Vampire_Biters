@@ -130,7 +130,7 @@ data:extend(
     max_richness_for_spawn_shift = 100,
     autoplace =
     {
-      sharpness = 0.04,
+      sharpness = 0.8,
 	  --sharpness = 0.4, -- default
       control = "enemy-base",
       order = "b[enemy]-c[vampire-den]",
@@ -162,8 +162,8 @@ data:extend(
         },
         -- increase the size when moving further away
         {
-          influence = 0.05,
-		  influence = 0.5, -- default
+          --influence = 0.06,
+		  influence = 0.4, -- default
           noise_layer = "enemy-base",
           noise_octaves_difference = -1.8,
           noise_persistence = 0.5,
@@ -209,7 +209,7 @@ data:extend(
     name = "small-vampire",
     icon = "__base__/graphics/icons/creeper.png",
     flags = {"placeable-player", "placeable-enemy", "placeable-off-grid", "breaths-air", "not-repairable"},
-    max_health = 15,
+    max_health = 8,
     order="b-b-d",
     subgroup="enemies",
     resistances = 
@@ -276,7 +276,7 @@ data:extend(
             {
               {
                 type = "damage",
-                damage = { amount = 15 , type = "Vampire_Kiss"}
+                damage = { amount = 10 , type = "Vampire_Kiss"}
               }
             }
           }
@@ -321,7 +321,7 @@ data:extend(
     order="b-b-e",
     icon = "__base__/graphics/icons/creeper.png",
     flags = {"placeable-player", "placeable-enemy", "placeable-off-grid", "breaths-air", "not-repairable"},
-    max_health = 1500,
+    max_health = 500,
     subgroup="enemies",
     resistances = 
     {
@@ -389,7 +389,7 @@ data:extend(
             {
               {
                 type = "damage",
-                damage = { amount = 25 , type = "Vampire_Kiss"}
+                damage = { amount = 15 , type = "Vampire_Kiss"}
               }
             }
           }
