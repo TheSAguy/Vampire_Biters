@@ -4,16 +4,16 @@ vampire_den_tint = {r=0, g=0, b=0, a=1}
 
 
 
-small_vampire_scale = 0.75
+small_vampire_scale = 0.65
 small_vampire_tint1 = {r=0, g=0, b=0, a=0}
 small_vampire_tint2 = {r=1, g=0.3, b=1.0, a=0.9}
 
-medium_vampire_scale = 1.25
-medium_vampire_tint1 = {r=0.3, g=0.9, b=0.9, a=0.6}
+medium_vampire_scale = 0.9
+medium_vampire_tint1 = {r=0, g=0, b=0, a=0}
 medium_vampire_tint2 = {r=0.3, g=1.0, b=0.6, a=0.95}
 
-big_vampire_scale = 2.5
-big_vampire_tint1 = {r=0.9, g=0.3, b=0.3, a=0.6}
+big_vampire_scale = 1.2
+big_vampire_tint1 = {r=0, g=0, b=0, a=0}
 big_vampire_tint2 = {r=1.0, g=0.3, b=0.8, a=0.95}
 
 
@@ -86,15 +86,9 @@ data:extend(
     dying_explosion = "blood-explosion-huge",
     loot =
     {
-      {
-        count_min = 10,
-        count_max = 15,
-        item = "alien-artifact",
-        probability = 1
-      },
     },
-    max_count_of_owned_units = 10,
-    max_friends_around_to_spawn = 20,
+    max_count_of_owned_units = 0,
+    max_friends_around_to_spawn = 0,
 	--max_count_of_owned_units = 25,
     --max_friends_around_to_spawn = 50,
     
@@ -120,7 +114,6 @@ data:extend(
         return res
     end)(),
 	
-	
     -- With zero evolution the spawn rate is 5 seconds, with max evolution it is 2 seconds
     spawning_cooldown = {600, 100},
 	--spawning_cooldown = {300, 120},
@@ -128,51 +121,7 @@ data:extend(
     spawning_spacing = 3,
     max_spawn_shift = 0,
     max_richness_for_spawn_shift = 100,
-    autoplace =
-    {
-      sharpness = 0.8,
-	  --sharpness = 0.4, -- default
-      control = "enemy-base",
-      order = "b[enemy]-c[vampire-den]",
-      richness_multiplier = 0.5, 
-	  --richness_multiplier = 1, -- default
-      richness_base = 0,
-      --force = "enemy", -- default
-	  force = "vampire",
-      peaks =
-      {
-        {
-          influence = 0,
-          richness_influence = 100,
-          tier_from_start_optimal = 20,
-          tier_from_start_top_property_limit = 20,
-          tier_from_start_max_range = 40,
-        },
-        {
-          influence = -10.0,
-          starting_area_weight_optimal = 1,
-          starting_area_weight_range = 0,
-          starting_area_weight_max_range = 2,
-        },
-        {
-          influence = 0.42,
-          noise_layer = "enemy-base",
-          noise_octaves_difference = -1.8,
-          noise_persistence = 0.5,
-        },
-        -- increase the size when moving further away
-        {
-          --influence = 0.06,
-		  influence = 0.4, -- default
-          noise_layer = "enemy-base",
-          noise_octaves_difference = -1.8,
-          noise_persistence = 0.5,
-          tier_from_start_optimal = 20,
-          tier_from_start_top_property_limit = 20,
-          tier_from_start_max_range = 40,
-        },
-      }
-    }
+    call_for_help_radius = 20
   },
 
   {
@@ -284,7 +233,7 @@ data:extend(
       },
       range = 1,
       cooldown = 35,
-      sound =  make_biter_roars(0.6),
+      sound = make_biter_roars(0.6),
       animation = biterattackanimation(small_vampire_scale, small_vampire_tint1, small_vampire_tint2)
     },
     vision_distance = 30,
@@ -312,8 +261,6 @@ data:extend(
     final_render_layer = "corpse",
     animation = biterdieanimation(small_vampire_scale, small_vampire_tint1, small_vampire_tint2)
   },
-
-
   
   {
     type = "unit",
