@@ -31,12 +31,14 @@ function on_loadOrSave()
 end
 
 function on_running(event)
+	surface = game.surfaces[1]
     if (event.tick % 360 == 0) then
         vampires = onLightLevel(vampires, surface)
     end
 end
 
 function on_remove(event)
+	    surface = game.surfaces[1]
     vampires = raiseVampire(event, vampires, surface)
 end
 
@@ -48,7 +50,7 @@ end
 
 ---------------------------------------------
 script.on_init(on_initialize)
-script.on_load(on_loadOrSave)
+--script.on_load(on_loadOrSave)
 
 script.on_event(defines.events.on_chunk_generated, on_chunk)
 script.on_event(defines.events.on_entity_died, on_remove)

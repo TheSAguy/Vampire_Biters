@@ -2,6 +2,7 @@
 require "vampireUtils"
 
 function onLightLevel(vampires, surface)
+	surface = game.surfaces[1]
     -- if light outside vampires die or lord saves surrounding minions by building nest
     if surface.darkness < 0.5 then
         if (vampires.lord ~= nil) and vampires.lord.valid then
@@ -63,6 +64,7 @@ function onLightLevel(vampires, surface)
 end
 
 function raiseVampire(event, vampires, surface)
+    surface = game.surfaces[1]
     -- if the vampire lord or coffin dies reset stats
     if (event.entity == vampires.lord) or (event.entity == vampires.den.coffin) then
         vampires.lordAge = 0
@@ -105,6 +107,7 @@ function raiseVampire(event, vampires, surface)
 end
 
 function formClans(vampires, surface)
+	surface = game.surfaces[1]
     local freeMinions = vampires.freeMinions
     local clanLeader = findValidUnit(freeMinions)
     -- pick the first unassigned valid unit
@@ -134,6 +137,7 @@ function formClans(vampires, surface)
 end
 
 function moveClans(vampires, surface)
+    surface = game.surfaces[1]
     local clans = vampires.clans
     local clanIndex = 1
     repeat
@@ -166,6 +170,7 @@ function moveClans(vampires, surface)
 end
 
 function mergeClans(vampires, surface) 
+	surface = game.surfaces[1]
     local clans = vampires.clans
     if (#clans >= 2) then
         
