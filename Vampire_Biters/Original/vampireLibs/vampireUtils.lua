@@ -1,5 +1,3 @@
-
---[[
 function killVampires(unitArray)
     for i=1, #unitArray do
         local vamp = unitArray[i]
@@ -9,7 +7,7 @@ function killVampires(unitArray)
         unitArray[i] = nil
     end
 end
-]]
+
 function findValidUnit(unitArray)
     local unit = nil
     local i = 1

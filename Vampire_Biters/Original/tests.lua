@@ -1,13 +1,9 @@
 function tester2()
     --for i = 1, 2000 do
-   -- local lord = game.surfaces[1].create_entity({name="small-vampire",
-   --                                              position={19, 19},
-   --                                              force = game.forces.vampire})
-
-    local lord = game.surfaces[1].create_entity({name="vampire-den",
+    local lord = game.surfaces[1].create_entity({name="small-vampire",
                                                  position={19, 19},
                                                  force = game.forces.vampire})
-												 --end
+    --end
     -- for i = 1, 2000 do
         -- game.surfaces[1].create_entity({name="small-spitter",
                                         -- position={math.random(20, 350), math.random(20, 350)},

@@ -21,7 +21,14 @@ function on_initialize()
 	end
 end
 
-
+function on_loadOrSave() 
+    if vampires == nil then
+        vampires = global.vampires
+    else
+        global.vampires = vampires
+    end
+    surface = game.surfaces[1]
+end
 
 function on_running(event)
 	surface = game.surfaces[1]
@@ -45,8 +52,8 @@ end
 script.on_init(on_initialize)
 --script.on_load(on_loadOrSave)
 
---script.on_event(defines.events.on_chunk_generated, on_chunk)
+script.on_event(defines.events.on_chunk_generated, on_chunk)
 script.on_event(defines.events.on_entity_died, on_remove)
---script.on_event(defines.events.on_tick, on_running)
+script.on_event(defines.events.on_tick, on_running)
 
 

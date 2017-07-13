@@ -87,8 +87,8 @@ data:extend(
     loot =
     {
     },
-    max_count_of_owned_units = 1,
-    max_friends_around_to_spawn = 20,
+    max_count_of_owned_units = 0,
+    max_friends_around_to_spawn = 0,
 	--max_count_of_owned_units = 25,
     --max_friends_around_to_spawn = 50,
     
