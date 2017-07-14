@@ -16,7 +16,8 @@ big_vampire_scale = 1.2
 big_vampire_tint1 = {r=0, g=0, b=0, a=0}
 big_vampire_tint2 = {r=1.0, g=0.3, b=0.8, a=0.95}
 
-
+health = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
+damage = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }
 
 
 --- DEN ---
@@ -149,6 +150,10 @@ data:extend(
 )
 
 
+
+
+
+
 ------- UNITS   --------------
 
 data:extend(
@@ -247,7 +252,103 @@ data:extend(
     dying_sound = make_biter_dying_sounds(1.0),
     run_animation = biterrunanimation(small_vampire_scale, small_vampire_tint1, small_vampire_tint2)
   },
+----------
+  {
+    type = "unit",
+    name = "vamp-minion",
+    icon = "__base__/graphics/icons/creeper.png",
+    flags = {"placeable-player", "placeable-enemy", "placeable-off-grid", "breaths-air", "not-repairable"},
+    max_health = 8,
+    order="b-b-d",
+    subgroup="enemies",
+    resistances = 
+    {
+      {
+        type = "physical",
+        decrease = 5,
+        percent = 10,
+      },
+      {
+        type = "explosion",
+        decrease = 5,
+        percent = 10,
+      },
+	 {
+        type = "laser",
+		decrease = 5,
+        percent = 10,
+      },
+      {
+        type = "impact",
+        decrease = 5,
+		percent = 10,
+      },
+      {
+        type = "fire",
+		decrease = 5,
+        percent = 10,
+      },
+      {
+        type = "poison",
+		decrease = 5,
+        percent = 10,
+      },
+      {
+        type = "acid",
+        decrease = 5,
+        percent = 10,
+      },
+    },
+    healing_per_tick = 0.04,
+    collision_box = {{-0.3, -0.3}, {0.3, 0.3}},
+    selection_box = {{-0.7, -1.5}, {0.7, 0.3}},
+    sticker_box = {{-0.3, -0.5}, {0.3, 0.1}},
+    distraction_cooldown = 300,
+    loot =
+    {
+    },
+    attack_parameters =
+    {
+      type = "projectile",
+      ammo_category = "melee",
+      ammo_type = 
+      {
+        category = "melee",
+        target_type = "entity",
+        action =
+        {
+          type = "direct",
+          action_delivery =
+          {
+            type = "instant",
+            target_effects =
+            {
+              {
+                type = "damage",
+                damage = { amount = 10 , type = "Vampire_Kiss"}
+              }
+            }
+          }
+        }
+      },
+      range = 1,
+      cooldown = 35,
+      sound = make_biter_roars(0.6),
+      animation = biterattackanimation(small_vampire_scale, small_vampire_tint1, small_vampire_tint2)
+    },
+    vision_distance = 30,
+    movement_speed = 0.16,
+    distance_per_frame = 0.15,
+    -- in pu
+    pollution_to_join_attack = 1250,
+    corpse = "small-vampire-corpse",
+    dying_explosion = "blood-explosion-small",
+    working_sound = make_biter_calls(1.2),
+    dying_sound = make_biter_dying_sounds(1.0),
+    run_animation = biterrunanimation(small_vampire_scale, small_vampire_tint1, small_vampire_tint2)
+  },
 
+  
     {
     type = "corpse",
     name = "small-vampire-corpse",
@@ -492,3 +593,11 @@ data:extend(
   }
 )
 
+
+for i = 1, #health do
+    vamp_army = table.deepcopy(data.raw.unit["small-vampire"])
+    vamp_army.name = "vamp_army-" .. i
+    vamp_army.max_health = health[i]
+    --vamp_army.attack_parameters.ammo_type.action.action_delivery.target_effects.damage.amount = damage[i]
+    data:extend{vamp_army}
+end

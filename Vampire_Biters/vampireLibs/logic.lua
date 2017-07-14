@@ -2,7 +2,7 @@
 require "vampireUtils"
 
 function raiseVampire(event, vampires, surface)
-    surface = game.surfaces[1]
+    --surface = game.surfaces[1]
 
     if (event.force ~= nil) and (event.force.name == "vampire") and (event.entity.force.name == "enemy") then
 
@@ -35,3 +35,22 @@ function raiseVampire(event, vampires, surface)
     end
     return vampires
 end
+
+
+
+
+global.New_Vamps = {}
+
+
+global.New_Vamps["small-vampire"] = "vamp_army-01"
+global.New_Vamps["vamp-minion"] = "vamp_army-01"
+
+global.New_Vamps["vamp_army-01"] = "vamp_army-02"
+global.New_Vamps["vamp_army-02"] = "vamp_army-03"
+global.New_Vamps["vamp_army-03"] = "vamp_army-04"
+global.New_Vamps["vamp_army-04"] = "vamp_army-05"
+global.New_Vamps["vamp_army-05"] = "vamp_army-06"
+global.New_Vamps["vamp_army-06"] = "vamp_army-07"
+global.New_Vamps["vamp_army-07"] = "vamp_army-08"
+global.New_Vamps["vamp_army-08"] = "vamp_army-09"
+global.New_Vamps["vamp_army-09"] = "vamp_army-10"
