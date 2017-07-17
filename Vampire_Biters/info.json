@@ -1,11 +1,11 @@
 {
-  "name": "Vampire_Biters",
+  "name": "Alien_Biters",
   "version": "0.1.0",
   "factorio_version": "0.15",
-  "title": "Vampire",
+  "title": "Aliens",
   "author": "TheSAguy + A lot of work from Veden",
   "contact": "vvwmisc@hotmail.com",
   "homepage": "https://forums.factorio.com/viewtopic.php?f=33&t=22453",
-  "description": "New Enemy Unit - Vampire",
+  "description": "New Enemy Unit - Alien",
   "dependencies": ["base >= 0.15"]
 }

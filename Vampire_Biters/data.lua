@@ -1,4 +1,4 @@
-require("prototypes.damage-type")
-require("prototypes.vampire-enemy")
+require("prototypes.damage")
+require("prototypes.alien-enemy")
 
 ---------------------------------------------------------------

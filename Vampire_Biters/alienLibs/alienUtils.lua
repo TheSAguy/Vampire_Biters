@@ -1,23 +1,26 @@
 
---[[
-function killVampires(unitArray)
-    for i=1, #unitArray do
-        local vamp = unitArray[i]
-        if (vamp.valid) then
-            vamp.die()
-        end
-        unitArray[i] = nil
-    end
+
+function killAlien(unitArray)
+	--writeDebug(unitArray)
+    if unitArray ~= nil then
+		for i=1, #unitArray do
+			local alien = unitArray[i]
+			if (alien.valid) then
+				alien.die()
+			end
+			unitArray[i] = nil
+		end
+	end
 end
-]]
+
 function findValidUnit(unitArray)
     local unit = nil
     local i = 1
     while (i < #unitArray) and (unit == nil) do
-        local vamp = unitArray[i]
-        if (vamp ~= nil) then
-            if (vamp.valid) then
-                unit = vamp
+        local alien = unitArray[i]
+        if (alien ~= nil) then
+            if (alien.valid) then
+                unit = alien
             else
                 unitArray[i] = nil
             end
