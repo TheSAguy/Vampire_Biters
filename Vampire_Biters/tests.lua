@@ -4,12 +4,26 @@ radius_from_player = 200
 spawn_zone = 100
 
 function tester2()
-    for i = 1, 100 do
-    global.Alien.Horde[i] = game.surfaces[1].create_entity({name="alien-army-"..i,
-                                                 position={i, 5},
-                                                 force = game.forces.alien})
+   
+
+   for i = 1, 100 do
+    
+	--global.Alien.Horde[i] = game.surfaces[1].create_entity({name="alien-army-"..i, position={i, 5},force = game.forces.alien})
+	
+	
+
+		
+		
+
+		local Alien_Spawn_Position = game.surfaces[1].find_non_colliding_position("alien-army-"..i, {i, 5}, 1 , 0.5)
+		if Alien_Spawn_Position then
+			global.Alien.Horde[i] = game.surfaces[1].create_entity({name="alien-army-"..i, position=Alien_Spawn_Position,force = game.forces.alien})
+		else
+			global.Alien.Horde[i] = game.surfaces[1].create_entity({name="alien-army-"..i, position={i, 7},force = game.forces.alien})
 		end
---[[		
+
+	end	
+		--[[		
     local lord = game.surfaces[1].create_entity({name="alien-army-25",
                                                  position={19, 19},
                                                  force = game.forces.alien})

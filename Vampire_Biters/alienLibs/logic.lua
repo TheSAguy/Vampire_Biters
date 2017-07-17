@@ -407,21 +407,21 @@ local Death_Action = {
 ["alien-army-83"] ="Swarm",
 ["alien-army-84"] ="Swarm",
 ["alien-army-85"] ="Swarm",
-["alien-army-86"] ="Swarm",
-["alien-army-87"] ="Swarm",
-["alien-army-88"] ="Swarm",
-["alien-army-89"] ="Swarm",
-["alien-army-90"] ="Swarm",
-["alien-army-91"] ="Swarm",
-["alien-army-92"] ="Swarm",
-["alien-army-93"] ="Swarm",
-["alien-army-94"] ="Swarm",
-["alien-army-95"] ="Swarm",
-["alien-army-96"] ="Swarm",
-["alien-army-97"] ="Swarm",
-["alien-army-98"] ="Swarm",
-["alien-army-99"] ="Swarm",
-["alien-army-100"] ="Swarm"
+["alien-army-86"] ="Breed_Swarm",
+["alien-army-87"] ="Breed_Swarm",
+["alien-army-88"] ="Breed_Swarm",
+["alien-army-89"] ="Breed_Swarm",
+["alien-army-90"] ="Breed_Swarm",
+["alien-army-91"] ="Breed_Swarm",
+["alien-army-92"] ="Breed_Swarm",
+["alien-army-93"] ="Breed_Swarm",
+["alien-army-94"] ="Breed_Swarm",
+["alien-army-95"] ="Breed_Swarm",
+["alien-army-96"] ="Breed_Swarm",
+["alien-army-97"] ="Breed_Swarm",
+["alien-army-98"] ="Breed_Swarm",
+["alien-army-99"] ="Breed_Swarm",
+["alien-army-100"] ="Breed_Swarm"
 
 }
 
@@ -537,7 +537,7 @@ function raisealien(event, Alien, surface)
 	local risenPosition = event.entity.position
 	local entityType = event.entity.type
 	local entityName = event.entity.name
-
+	local freeAliens = global.Alien.Alien_Units
 	
 	if (event.force ~= nil) and (event.force.name == "alien") and (event.entity.force.name == "enemy") then
 	
@@ -548,6 +548,7 @@ function raisealien(event, Alien, surface)
 			
 			local risen = surface.create_entity({name = "alien-army-1", position = risenPosition, force = "alien"})
 			table.insert(global.Alien.Horde, risen)
+			freeAliens[#freeAliens+1] = risen
 			--
 			-- Upgrade the alien that did the killing of the Unit
 			if event.cause and event.cause.force.name == "alien" then
@@ -576,7 +577,7 @@ function raisealien(event, Alien, surface)
 				
 				local risen = surface.create_entity({name = "alien-army-1", position = risenPosition, force = "alien"})
 				table.insert(global.Alien.Horde, risen)
-				
+				freeAliens[#freeAliens+1] = risen
 				risenPosition.x = risenPosition.x + 1
 				
 			end
@@ -600,15 +601,22 @@ function raisealien(event, Alien, surface)
 			end
 			
 		end
-		---writeDebug("The number of Free Minions are: "..#freeMinions)	
-		writeDebug("The Horde number is: "..#global.Alien.Horde)	
+		--writeDebug("The number of Free Minions are: "..#freeAliens)	
+		--writeDebug("The Horde number is: "..#global.Alien.Horde)	
 		
+	     if (#freeAliens > 10) then
+		 writeDebug("1: "..#freeAliens)
+            global.Alien = formClans(global.Alien, surface)
+        end
+	
 	end
 
 	---- If a Alien dies
-    if (event.force ~= nil)  and (entityType == "unit")  then -- and (event.force.name == "enemy")
-	
-		writeDebug("A alien Died")	
+    if (event.force ~= nil)  and (entityType == "unit")  then 
+		
+		
+		--writeDebug("A alien Died")	
+
 		Remove_Horde()
 		--writeDebug("The Horde number is: "..#global.Alien.Horde)	
 		
@@ -630,6 +638,11 @@ function raisealien(event, Alien, surface)
 		
 			writeDebug("Explode")
 			Explosion(event)
+			
+		elseif Death_Action[AlienName] == 'Breed_Swarm' then
+		
+			Spawn_Nest(event)
+			Alien_Swarm(event)
 			
 		else
 		
@@ -679,7 +692,6 @@ end
 
 
 
-
 ---- Removes Horde ---
 function Remove_Horde(index)
 
@@ -702,44 +714,49 @@ function Remove_Horde(index)
 end
 
 
---[[
+
 function formClans(Alien, surface)
-	surface = game.surfaces[1]
-    local freeMinions = Alien.freeMinions
-    local clanLeader = findValidUnit(freeMinions)
+	--surface = game.surfaces[1]
+    local freeAliens = Alien.Alien_Units
+	writeDebug("2: "..#freeAliens)
+    local clanLeader = findValidUnit(freeAliens)
     -- pick the first unassigned valid unit
     if (clanLeader ~= nil) then
         local newClan = surface.create_unit_group({position = clanLeader.position,
                                                    force = "alien"})
-        local minions = Alien.minions
-        for i=1, #freeMinions do
-            local alien = freeMinions[i]
+        local Horde = Alien.Horde
+		writeDebug("Number of Horde: "..#Horde)
+        for i=1, #freeAliens do
+            local alien = freeAliens[i]
             if (alien ~= nil) then
                 if (alien.valid) then
                     newClan.add_member(alien)
-                    minions[#minions+1] = alien
-                    freeMinions[i] = nil
+                    Horde[#Horde+1] = alien
+                    freeAliens[i] = nil
                 else
-                    freeMinions[i] = nil
+                    freeAliens[i] = nil
                 end
             end
         end
-        Alien.clans[#Alien.clans+1] = newClan
-        -- merge clans if they are close enough together
-        mergeClans(Alien, surface)
-        -- give clans orders
-        moveClans(Alien, surface)
+		
+        --Alien.Clans[#Alien.Clans+1] = newClan
+		--Alien.Clans[#Clans+1] = newClan
+        -- merge Clans if they are close enough together
+        --mergeClans(Alien, surface)
+        -- give Clans orders
+        --moveClans(Alien, surface)
+	--writeDebug("Number of Clans: "..#Clans)	
     end
-    return Alien
+    return global.Alien
 end
-
+--[[
 function moveClans(Alien, surface)
     surface = game.surfaces[1]
-    local clans = Alien.clans
+    local Clans = Alien.Clans
     local clanIndex = 1
     repeat
-        local clan = clans[clanIndex]
-        if (clan ~= nil) and (clan.valid) then
+        local clan = Clans[clanIndex]
+        if (clan ~= nil) and (clan.valid) thenaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             -- check pollution is touching unit group, set_autonomous
             if (surface.get_pollution(clan.position) ~= 0) then
                 clan.set_autonomous()
@@ -763,21 +780,21 @@ function moveClans(Alien, surface)
             -- TODO improve the logic
         end
         clanIndex = clanIndex + 1
-    until (clanIndex >= #clans)
+    until (clanIndex >= #Clans)
 end
 
 function mergeClans(Alien, surface) 
 	surface = game.surfaces[1]
-    local clans = Alien.clans
-    if (#clans >= 2) then
+    local Clans = Alien.Clans
+    if (#Clans >= 2) then
         
-        for clanIndex=1, #clans do
-            -- pick a clan and merge with any other nearby clans
-            local clan = clans[clanIndex]
+        for clanIndex=1, #Clans do
+            -- pick a clan and merge with any other nearby Clans
+            local clan = Clans[clanIndex]
             if (clan ~= nil) and clan.valid then
                 
-                for mergedIndex=clanIndex+1, #clans do
-                    local mergeClan = clans[mergedIndex]
+                for mergedIndex=clanIndex+1, #Clans do
+                    local mergeClan = Clans[mergedIndex]
                     if (mergeClan ~= nil) and (mergeClan.valid) then
                         if (euclideanDistance(clan.position, mergeClan.position) < 100) then
                             local mergeMembers = mergeClan.members
@@ -785,7 +802,7 @@ function mergeClans(Alien, surface)
                                 clan.add_member(mergeMembers[i])
                             end
                             mergeClan.destroy()
-                            clans[mergedIndex] = nil
+                            Clans[mergedIndex] = nil
                         end
                     end
                 end

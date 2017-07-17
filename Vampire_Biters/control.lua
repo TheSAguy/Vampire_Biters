@@ -18,6 +18,10 @@ function on_initialize()
 			global.Alien.Horde = {}
 		end
 	
+		if global.Alien.Clans == nil then
+			global.Alien.Clans = {}
+		end
+		
 		if global.Alien.Alien_Units == nil then
 			global.Alien.Alien_Units = {}
 		end
@@ -31,7 +35,7 @@ end
 function on_remove(event)
 
 	surface = event.entity.surface
-    global.Alien = raisealien(event, Alien, surface)
+    global.Alien = raisealien(event, global.Alien, surface)
    
 
 	
@@ -41,8 +45,8 @@ end
 function on_running(event)
 
     if (event.tick % 360 == 0) then
-       	writeDebug(global.Alien)
-		writeDebug(#global.Alien.Horde)
+       	--writeDebug(global.Alien)
+		--writeDebug(#global.Alien.Horde)
 		
     end
 end
@@ -51,7 +55,7 @@ end
 ---------------------------------------------
 script.on_init(on_initialize)
 
-script.on_event(defines.events.on_tick, on_running)
+--script.on_event(defines.events.on_tick, on_running)
 script.on_event(defines.events.on_entity_died, on_remove)
 
 
