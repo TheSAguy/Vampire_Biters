@@ -1,6 +1,12 @@
+local waterTiles =
+{
+  ["deepwater"] = true,
+  ["deepwater-green"] = true,
+  ["water"] = true,
+  ["water-green"] = true
+}
 
-
-radius_from_player = 200
+radius_from_player = 250
 spawn_zone = 100
 
 function tester2()
@@ -17,9 +23,9 @@ function tester2()
 
 		local Alien_Spawn_Position = game.surfaces[1].find_non_colliding_position("alien-army-"..i, {i, 5}, 1 , 0.5)
 		if Alien_Spawn_Position then
-			global.Alien.Horde[i] = game.surfaces[1].create_entity({name="alien-army-"..i, position=Alien_Spawn_Position,force = game.forces.alien})
+			local lords = game.surfaces[1].create_entity({name="alien-army-"..i, position=Alien_Spawn_Position,force = game.forces.alien})
 		else
-			global.Alien.Horde[i] = game.surfaces[1].create_entity({name="alien-army-"..i, position={i, 7},force = game.forces.alien})
+			local lords = game.surfaces[1].create_entity({name="alien-army-"..i, position={i, 7},force = game.forces.alien})
 		end
 
 	end	
@@ -41,20 +47,22 @@ function tester2()
      end
 	 
 ]]	 
-    game.surfaces[1].create_entity({name="biter-spawner",
-                                    position={25, 25},
-                                    force = game.forces.enemy})
-    game.surfaces[1].create_entity({name="biter-spawner",
-                                    position={30, 30},
-                                    force = game.forces.enemy})
-    --game.surfaces[1].create_entity({name="biter-spawner", position={35, 35}, force = game.forces.enemy})
-    return global.Alien.Horde
+	game.surfaces[1].create_entity({name="biter-spawner", position={25, 25},force = game.forces.enemy})
+	game.surfaces[1].create_entity({name="biter-spawner", position={30, 30},force = game.forces.enemy})
+	game.surfaces[1].create_entity({name="biter-spawner", position={35, 35},force = game.forces.enemy})
+	game.surfaces[1].create_entity({name="biter-spawner", position={40, 40},force = game.forces.enemy})
+	for i = 1, 100 do
+		game.surfaces[1].create_entity({name="big-biter", position={i+40, 40},force = game.forces.enemy})
+	end
+	
+    return lords
 end
 
 function Initial_Spawn()
 
 	local Dens_Spawned = 0
 	local Scatter = 0
+	local chart_radius = 10
 	while Dens_Spawned < 100 do
 		
 		local surface = game.surfaces[1]
@@ -74,18 +82,21 @@ function Initial_Spawn()
 		end
 
 		
+		local currentTilename = surface.get_tile(pos_x, pos_y).name
 		
-		if surface.can_place_entity({ name="alien-den", position={pos_x, pos_y}}) then
-			local Alien_Units = surface.create_entity({name="alien-den", position={pos_x, pos_y},force = game.forces.alien})
+		if surface.can_place_entity({ name="alien-army-26", position={pos_x, pos_y}}) and not waterTiles[currentTilename] then
+			local lords = surface.create_entity({name="alien-army-26", position={pos_x, pos_y},force = game.forces.alien})
+			
+			--create_entity.force.chart(surface, {{event.created_entity.position.x - chart_radius, event.created_entity.position.y - chart_radius}, {event.created_entity.position.x + chart_radius, event.created_entity.position.y + chart_radius}}) 
+			for _,force in pairs( game.forces )do
+			force.chart( surface, {{x = pos_x - chart_radius, y = pos_y - chart_radius}, {x = pos_x, y = pos_y}})
+			end
 			
 			Dens_Spawned = Dens_Spawned + 1
-			Scatter = Scatter + 10
+			Scatter = Scatter + 100
 		end
 	end
-	local surface = game.surfaces[1]
-	local Alien_Units = surface.create_entity({name="alien-army-25",
-                                                 position={19, 19},
-                                                 force = game.forces.alien})
+
 	
-    return Alien_Units
+    return lords
 end

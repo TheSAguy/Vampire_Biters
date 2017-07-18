@@ -12,22 +12,20 @@ function on_initialize()
 	end
 		if global.Alien == nil then
 			global.Alien = {}		
-		end
-
-		if global.Alien.Horde == nil then
-			global.Alien.Horde = {}
-		end
 	
-		if global.Alien.Clans == nil then
-			global.Alien.Clans = {}
+			global.Alien.freeAliens = {}
+			global.Alien.minions = {}
+			global.Alien.clans = {}
+			global.Alien.den = {}
+		
+		end
+			
+		if global.Alien.lords == nil then
+			global.Alien.lords = {}
 		end
 		
-		if global.Alien.Alien_Units == nil then
-			global.Alien.Alien_Units = {}
-		end
-		
-		--global.Alien.Alien_Units = Initial_Spawn()
-		global.Alien.Alien_Units = tester2()
+		global.Alien.lords = Initial_Spawn()
+		--global.Alien.lords = tester2()
 end
 
 

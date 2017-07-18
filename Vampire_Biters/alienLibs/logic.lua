@@ -537,7 +537,7 @@ function raisealien(event, Alien, surface)
 	local risenPosition = event.entity.position
 	local entityType = event.entity.type
 	local entityName = event.entity.name
-	local freeAliens = global.Alien.Alien_Units
+	local freeAliens = Alien.freeAliens
 	
 	if (event.force ~= nil) and (event.force.name == "alien") and (event.entity.force.name == "enemy") then
 	
@@ -547,7 +547,7 @@ function raisealien(event, Alien, surface)
 		if (entityType == "unit") then		
 			
 			local risen = surface.create_entity({name = "alien-army-1", position = risenPosition, force = "alien"})
-			table.insert(global.Alien.Horde, risen)
+			--table.insert(global.Alien.Horde, risen)
 			freeAliens[#freeAliens+1] = risen
 			--
 			-- Upgrade the alien that did the killing of the Unit
@@ -576,7 +576,7 @@ function raisealien(event, Alien, surface)
 			for i=1, 5 do
 				
 				local risen = surface.create_entity({name = "alien-army-1", position = risenPosition, force = "alien"})
-				table.insert(global.Alien.Horde, risen)
+				--table.insert(global.Alien.Horde, risen)
 				freeAliens[#freeAliens+1] = risen
 				risenPosition.x = risenPosition.x + 1
 				
@@ -606,7 +606,7 @@ function raisealien(event, Alien, surface)
 		
 	     if (#freeAliens > 10) then
 		 writeDebug("1: "..#freeAliens)
-            global.Alien = formClans(global.Alien, surface)
+            Alien = formclans(Alien, surface)
         end
 	
 	end
@@ -617,7 +617,7 @@ function raisealien(event, Alien, surface)
 		
 		--writeDebug("A alien Died")	
 
-		Remove_Horde()
+		--Remove_Horde()
 		--writeDebug("The Horde number is: "..#global.Alien.Horde)	
 		
 		local AlienName = event.entity.name
@@ -652,7 +652,7 @@ function raisealien(event, Alien, surface)
 		
 	end
 	
-    return global.Alien
+    return Alien
 end
 
 
@@ -677,7 +677,7 @@ end
 -- Swarn the Alien that died
 function Alien_Swarm(event)
 	local AlienName = event.entity.name
-	writeDebug("Alien Name: "..AlienName) 
+	--writeDebug("Alien Name: "..AlienName) 
 
 	local number = Swarm_Count[AlienName]
 
@@ -715,23 +715,22 @@ end
 
 
 
-function formClans(Alien, surface)
-	--surface = game.surfaces[1]
-    local freeAliens = Alien.Alien_Units
+function formclans(Alien, surface)
+
+    local freeAliens = Alien.freeAliens
 	writeDebug("2: "..#freeAliens)
     local clanLeader = findValidUnit(freeAliens)
     -- pick the first unassigned valid unit
     if (clanLeader ~= nil) then
         local newClan = surface.create_unit_group({position = clanLeader.position,
                                                    force = "alien"})
-        local Horde = Alien.Horde
-		writeDebug("Number of Horde: "..#Horde)
+        local minions = Alien.minions
         for i=1, #freeAliens do
-            local alien = freeAliens[i]
-            if (alien ~= nil) then
-                if (alien.valid) then
-                    newClan.add_member(alien)
-                    Horde[#Horde+1] = alien
+            local alien_x = freeAliens[i]
+            if (alien_x ~= nil) then
+                if (alien_x.valid) then
+                    newClan.add_member(alien_x)
+                    minions[#minions+1] = alien_x
                     freeAliens[i] = nil
                 else
                     freeAliens[i] = nil
@@ -739,23 +738,22 @@ function formClans(Alien, surface)
             end
         end
 		
-        --Alien.Clans[#Alien.Clans+1] = newClan
-		--Alien.Clans[#Clans+1] = newClan
-        -- merge Clans if they are close enough together
-        --mergeClans(Alien, surface)
-        -- give Clans orders
-        --moveClans(Alien, surface)
-	--writeDebug("Number of Clans: "..#Clans)	
+        Alien.clans[#Alien.clans+1] = newClan
+        -- merge clans if they are close enough together
+        mergeclans(Alien, surface)
+        -- give clans orders
+        --moveclans(Alien, surface)	
+		writeDebug("Number of clans: "..#Alien.clans)	
     end
-    return global.Alien
+    return Alien
 end
 --[[
-function moveClans(Alien, surface)
+function moveclans(Alien, surface)
     surface = game.surfaces[1]
-    local Clans = Alien.Clans
+    local clans = Alien.clans
     local clanIndex = 1
     repeat
-        local clan = Clans[clanIndex]
+        local clan = clans[clanIndex]
         if (clan ~= nil) and (clan.valid) thenaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
             -- check pollution is touching unit group, set_autonomous
             if (surface.get_pollution(clan.position) ~= 0) then
@@ -780,21 +778,21 @@ function moveClans(Alien, surface)
             -- TODO improve the logic
         end
         clanIndex = clanIndex + 1
-    until (clanIndex >= #Clans)
+    until (clanIndex >= #clans)
 end
-
-function mergeClans(Alien, surface) 
-	surface = game.surfaces[1]
-    local Clans = Alien.Clans
-    if (#Clans >= 2) then
+]]
+function mergeclans(Alien, surface) 
+	
+    local clans = Alien.clans
+    if (#clans >= 2) then
         
-        for clanIndex=1, #Clans do
-            -- pick a clan and merge with any other nearby Clans
-            local clan = Clans[clanIndex]
+        for clanIndex=1, #clans do
+            -- pick a clan and merge with any other nearby clans
+            local clan = clans[clanIndex]
             if (clan ~= nil) and clan.valid then
                 
-                for mergedIndex=clanIndex+1, #Clans do
-                    local mergeClan = Clans[mergedIndex]
+                for mergedIndex=clanIndex+1, #clans do
+                    local mergeClan = clans[mergedIndex]
                     if (mergeClan ~= nil) and (mergeClan.valid) then
                         if (euclideanDistance(clan.position, mergeClan.position) < 100) then
                             local mergeMembers = mergeClan.members
@@ -802,15 +800,16 @@ function mergeClans(Alien, surface)
                                 clan.add_member(mergeMembers[i])
                             end
                             mergeClan.destroy()
-                            Clans[mergedIndex] = nil
+                            clans[mergedIndex] = nil
                         end
                     end
                 end
             
             end
+			writeDebug("Two clans got merged")
+			writeDebug("Now the number of clans: "..#clans)
         end
     
     end
     return Alien
 end
-]]
