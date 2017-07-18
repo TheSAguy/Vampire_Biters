@@ -1,12 +1,24 @@
 require "util"
-require "tests"
+require "alienLibs/initialSpawn"
 require "alienLibs/logic"
+
+
+if remote.interfaces.EvoGUI then
+	require "alienLibs/EvoGUI"
+end
+
+
+
 local QC_Mod = true
+
 
 
 
 ---------------------------------------------				 
 function on_initialize()
+	
+	local surface = game.surfaces['nauvis']
+	
 	if game.forces['alien'] == nil then
         game.create_force('alien')
 	end
@@ -24,8 +36,17 @@ function on_initialize()
 			global.Alien.lords = {}
 		end
 		
-		global.Alien.lords = Initial_Spawn()
-		--global.Alien.lords = tester2()
+		global.Alien.lords = Initial_Spawn(surface)
+		--global.Alien.lords = tester2(surface)
+		
+		---- Used for EvoGUI
+		if not global.Total_Nest_Count then
+			global.Total_Nest_Count = 0
+        elseif global.Total_Nest_Count < 0 then
+			global.Total_Nest_Count = 0
+		end
+
+		
 end
 
 
@@ -34,8 +55,6 @@ function on_remove(event)
 
 	surface = event.entity.surface
     global.Alien = raisealien(event, global.Alien, surface)
-   
-
 	
 end
 

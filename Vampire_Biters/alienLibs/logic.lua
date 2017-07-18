@@ -109,6 +109,7 @@ local ValidUpgrade =
 
 }
 
+
 local Alien_Upgrade_from_killing_Units = 
 {
 
@@ -215,6 +216,7 @@ local Alien_Upgrade_from_killing_Units =
 
 }
 
+
 local Alien_Upgrade_from_killing_Spawner = 
 {
 
@@ -320,8 +322,10 @@ local Alien_Upgrade_from_killing_Spawner =
 
 }
 
+
 local Death_Action = {
 
+["alien-den"] ="Swarm",
 ["alien-army-1"] ="Nothing",
 ["alien-army-2"] ="Nothing",
 ["alien-army-3"] ="Nothing",
@@ -425,8 +429,10 @@ local Death_Action = {
 
 }
 
+
 local Swarm_Count = {
 
+["alien-den"] = 5,
 ["alien-army-1"] = 0,
 ["alien-army-2"] = 0,
 ["alien-army-3"] = 0,
@@ -530,6 +536,7 @@ local Swarm_Count = {
 
 }
 
+------------------------------
 
 function raisealien(event, Alien, surface)
    
@@ -547,7 +554,6 @@ function raisealien(event, Alien, surface)
 		if (entityType == "unit") then		
 			
 			local risen = surface.create_entity({name = "alien-army-1", position = risenPosition, force = "alien"})
-			--table.insert(global.Alien.Horde, risen)
 			freeAliens[#freeAliens+1] = risen
 			--
 			-- Upgrade the alien that did the killing of the Unit
@@ -571,12 +577,12 @@ function raisealien(event, Alien, surface)
 		--- If a Spawner get's killed
 		elseif (entityType == "unit-spawner") then
 
+			writeDebug("An Alien Nest was destroyed")	
 			-- Raise 5 units if a spawner get's killed
 			risenPosition.x = risenPosition.x - 5
 			for i=1, 5 do
 				
 				local risen = surface.create_entity({name = "alien-army-1", position = risenPosition, force = "alien"})
-				--table.insert(global.Alien.Horde, risen)
 				freeAliens[#freeAliens+1] = risen
 				risenPosition.x = risenPosition.x + 1
 				
@@ -585,6 +591,10 @@ function raisealien(event, Alien, surface)
 			-- Upgrade the alienite that did the killing of the Spawner
 			if event.cause and event.cause.force.name == "alien" then
 				
+			-- The Evolution Factor gets affected when the Aliens kill nests, so I'm counteracting that here.	
+				writeDebug("Alien killed an Enemy Spawner")
+				game.forces.enemy.evolution_factor = game.forces.enemy.evolution_factor - (game.map_settings.enemy_evolution.destroy_factor * (1-game.forces.enemy.evolution_factor)^2)	
+
 				local causeName = event.cause.name
 			
 				if ValidUpgrade[causeName] then
@@ -602,24 +612,18 @@ function raisealien(event, Alien, surface)
 			
 		end
 		--writeDebug("The number of Free Minions are: "..#freeAliens)	
-		--writeDebug("The Horde number is: "..#global.Alien.Horde)	
+		--writeDebug("The Horde number is: "..#global.Total_Nest_Count)	
 		
 	     if (#freeAliens > 10) then
-		 writeDebug("1: "..#freeAliens)
             Alien = formclans(Alien, surface)
         end
 	
 	end
 
-	---- If a Alien dies
+	---- If an Alien unit dies
     if (event.force ~= nil)  and (entityType == "unit")  then 
-		
-		
+			
 		--writeDebug("A alien Died")	
-
-		--Remove_Horde()
-		--writeDebug("The Horde number is: "..#global.Alien.Horde)	
-		
 		local AlienName = event.entity.name
 		
 		if Death_Action[AlienName] == 'Swarm' then
@@ -652,6 +656,14 @@ function raisealien(event, Alien, surface)
 		
 	end
 	
+	---- If an Alien nest dies
+	if (event.force ~= nil)  and (entityType == "unit-spawner") and (event.entity.name == "alien-den")  then 
+	
+		Alien_Swarm(event)
+		global.Total_Nest_Count = global.Total_Nest_Count + 1
+		
+	end
+	
     return Alien
 end
 
@@ -668,7 +680,12 @@ function Spawn_Nest(event)
 
 	local SpawnAlienPosition = event.entity.surface.find_non_colliding_position(event.entity.name, event.entity.position, 2 , 0.5)
 	if SpawnAlienPosition then
-		event.entity.surface.create_entity({name = "alien-den", position = SpawnAlienPosition, force = "alien"})
+		local new_nest = event.entity.surface.create_entity({name = "alien-den", position = SpawnAlienPosition, force = "alien"})
+		--table.insert(global.Total_Nest_Count, new_nest)
+		writeDebug("An Alien Nest Spawned")	
+		-- Add the created nest to the table
+		global.Total_Nest_Count = global.Total_Nest_Count + 1
+		
 	end
 			
 end
@@ -692,33 +709,36 @@ end
 
 
 
----- Removes Horde ---
-function Remove_Horde(index)
+
+--[[
+function Remove_Nest(index)
 
   if index then
-    if global.Alien.Horde[index] and not global.Alien.Horde[index].valid then
-      table.remove(global.Alien.Horde, index)
+    if global.Total_Nest_Count[index] and not global.Total_Nest_Count[index].valid then
+      table.remove(global.Total_Nest_Count, index)
 	  --writeDebug("Removed A")
       return -- if an index was found and it's entity was not valid return after removing it
     end
   end
   -- if no index was provided, or an inappropriate index was provided then loop through the table
 
-  for k,v in ipairs(global.Alien.Horde) do
+  for k,v in ipairs(global.Total_Nest_Count) do
     if not v.valid then
-      table.remove(global.Alien.Horde,k)
+      table.remove(global.Total_Nest_Count,k)
       --writeDebug("Removed B")
     end
   end
   
+ writeDebug("The current Nest count is: "..#global.Total_Nest_Count)	
+
 end
 
-
+]]
 
 function formclans(Alien, surface)
 
     local freeAliens = Alien.freeAliens
-	writeDebug("2: "..#freeAliens)
+	--writeDebug("2: "..#freeAliens)
     local clanLeader = findValidUnit(freeAliens)
     -- pick the first unassigned valid unit
     if (clanLeader ~= nil) then
@@ -742,45 +762,14 @@ function formclans(Alien, surface)
         -- merge clans if they are close enough together
         mergeclans(Alien, surface)
         -- give clans orders
-        --moveclans(Alien, surface)	
-		writeDebug("Number of clans: "..#Alien.clans)	
+        moveclans(Alien, surface)	
+
     end
     return Alien
 end
---[[
-function moveclans(Alien, surface)
-    surface = game.surfaces[1]
-    local clans = Alien.clans
-    local clanIndex = 1
-    repeat
-        local clan = clans[clanIndex]
-        if (clan ~= nil) and (clan.valid) thenaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-            -- check pollution is touching unit group, set_autonomous
-            if (surface.get_pollution(clan.position) ~= 0) then
-                clan.set_autonomous()
-            end
-            
-            local players = game.players
-            local playerIndex = 1
-            local closestDistance = -1
-            local closestPlayer = nil
-            repeat
-                local distance = euclideanDistance(players[playerIndex].position, clan.position)
-                if (closestDistance == -1) or (distance < closestDistance) then
-                    closestPlayer = players[playerIndex]
-                    closestDistance = distance
-                end
-                playerIndex = playerIndex + 1
-            until (playerIndex >= #players)
-            clan.set_command({type = defines.command.attack,
-                              target = closestPlayer.character})
-            
-            -- TODO improve the logic
-        end
-        clanIndex = clanIndex + 1
-    until (clanIndex >= #clans)
-end
-]]
+
+-----------------
+
 function mergeclans(Alien, surface) 
 	
     local clans = Alien.clans
@@ -806,10 +795,46 @@ function mergeclans(Alien, surface)
                 end
             
             end
-			writeDebug("Two clans got merged")
-			writeDebug("Now the number of clans: "..#clans)
+			--writeDebug("Two clans got merged")
+			--writeDebug("Now the number of clans: "..#clans)
         end
     
     end
     return Alien
+end
+
+-----------------
+
+function moveclans(Alien, surface)
+
+    local clans = Alien.clans
+    local clanIndex = 1
+	writeDebug("Trying to move clans")
+    repeat
+        local clan = clans[clanIndex]
+        if (clan ~= nil) and (clan.valid) then
+            -- check pollution is touching unit group, set_autonomous
+            if (surface.get_pollution(clan.position) ~= 0) then
+                clan.set_autonomous()
+            end
+            
+            local players = game.players
+            local playerIndex = 1
+            local closestDistance = -1
+            local closestPlayer = nil
+            repeat
+                local distance = euclideanDistance(players[playerIndex].position, clan.position)
+                if (closestDistance == -1) or (distance < closestDistance) then
+                    closestPlayer = players[playerIndex]
+                    closestDistance = distance
+                end
+                playerIndex = playerIndex + 1
+            until (playerIndex >= #players)
+            clan.set_command({type = defines.command.attack,
+                              target = closestPlayer.character})
+            
+            -- TODO improve the logic
+        end
+        clanIndex = clanIndex + 1
+    until (clanIndex >= #clans)
 end

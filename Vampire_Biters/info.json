@@ -1,11 +1,11 @@
 {
   "name": "Alien_Biters",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "factorio_version": "0.15",
-  "title": "Aliens",
+  "title": "Aliens!",
   "author": "TheSAguy + A lot of work from Veden",
   "contact": "vvwmisc@hotmail.com",
   "homepage": "https://forums.factorio.com/viewtopic.php?f=33&t=22453",
-  "description": "New Enemy Unit - Alien",
-  "dependencies": ["base >= 0.15"]
+  "description": "There are creatures far worse that the native biters, Aliens that were on your ship when it crashed to this unsuspecting planet...It was probably them that caused your ship to crash in the first place.",
+  "dependencies": ["base >= 0.15", "? EvoGUI"]
 }

@@ -74,8 +74,9 @@ data:extend(
     },
     healing_per_tick = 0.02,
     collision_box = {{-0.3, -0.3}, {0.3, 0.3}},
+	collision_mask = {"water-tile"},
     selection_box = {{-0.7, -1.5}, {0.7, 0.3}},
-    --sticker_box = {{-0.3, -0.5}, {0.3, 0.1}},
+    sticker_box = {{-0.3, -0.5}, {0.3, 0.1}},
     distraction_cooldown = 300,
     loot =
     {
@@ -133,9 +134,6 @@ end
 
 for i = 1, 100 do
 
-
-   -- tint1 = table.deepcopy(alien_tint1[i])
-	--tint2 = table.deepcopy(alien_tint2[i])
 	alien_army = table.deepcopy(data.raw.unit["base-alien"])
     alien_army.name = "alien-army-" .. i
 	alien_army.collision_box = v_collision_box[i]
@@ -144,16 +142,9 @@ for i = 1, 100 do
     alien_army.max_health = health[i]
 	alien_army.corpse = "alien-corpse-" .. i
 	alien_army.attack_parameters.ammo_type.action.action_delivery.target_effects.damage = damage_amount[i]
-	
-	--Option 1:
 	alien_army.attack_parameters.animation = biterattackanimation(alien_scale[i], alien_tint1[i], alien_tint2[i])
 	alien_army.run_animation = biterrunanimation(alien_scale[i], alien_tint1[i], alien_tint2[i])
-	
-	--Option2:
-	--alien_army.attack_parameters.animation = biterattackanimation(alien_scale[i], alien_tint1["alien-army-" .. i], alien_tint2["alien-army-" .. i])
-	--alien_army.run_animation = biterrunanimation(alien_scale[i], alien_tint1["alien-army-" .. i], alien_tint2["alien-army-" .. i])
-	
-	
+
     data:extend{alien_army}
 end
 
