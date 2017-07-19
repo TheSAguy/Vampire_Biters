@@ -8,16 +8,16 @@ local waterTiles =
 
 
 
-
 function Initial_Spawn(surface)
 
 	local spawn_zone = 100
-	local Dens_Spawned = 0
+	local Nest_Spawned = 0
 	local Scatter = 0
 	local chart_radius = 10
 	local radius_from_player = settings.startup["Alien_Distance"].value
 	
-	while Dens_Spawned < settings.startup["Alien_Count"].value do
+	for i = 1, settings.startup["Alien_Count"].value do 
+	--while Nest_Spawned < settings.startup["Alien_Count"].value do
 		
 		local surface = surface
 		local pos_x = math.random(-(spawn_zone+Scatter),(spawn_zone+Scatter))
@@ -41,16 +41,19 @@ function Initial_Spawn(surface)
 		if surface.can_place_entity({ name="alien-army-26", position={pos_x, pos_y}, force = game.forces.alien}) then --and not waterTiles[currentTilename] then
 					
 			local lords = surface.create_entity({name="alien-army-26", position={pos_x, pos_y},force = game.forces.alien})	
-			
+			--global.Initial_Aliens[i] = lords
+			global.Initial_Aliens.count[i] = lords
+			--[[
 			for _,force in pairs( game.forces )do
 				force.chart( surface, {{x = pos_x - chart_radius, y = pos_y - chart_radius}, {x = pos_x, y = pos_y}})
 			end			
+			]]
 			
-			Dens_Spawned = Dens_Spawned + 1
+			Nest_Spawned = Nest_Spawned + 1
 			Scatter = Scatter + 100
 		else 
 		
-			Dens_Spawned = Dens_Spawned
+			Nest_Spawned = Nest_Spawned
 			
 		end
 		

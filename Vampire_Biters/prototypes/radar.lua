@@ -36,15 +36,15 @@ data:extend(
     collision_box = {{-1.4, -1.4}, {1.4, 1.4}},
     selection_box = {{-1.5, -1.5}, {1.5, 1.5}},
     energy_per_sector = "10MJ",
-    max_distance_of_sector_revealed = 100,
-    max_distance_of_nearby_sector_revealed = 80,
+    max_distance_of_sector_revealed = 80,
+    max_distance_of_nearby_sector_revealed = 60,
     energy_per_nearby_scan = "250kJ",
     energy_source =
     {
       type = "electric",
       usage_priority = "secondary-input"
     },
-    energy_usage = "30kW",
+    energy_usage = "100kW",
     pictures =
     {
       filename = "__base__/graphics/entity/radar/radar.png",

@@ -21,6 +21,7 @@ function on_initialize()
 	
 	if game.forces['alien'] == nil then
         game.create_force('alien')
+		game.forces['alien'].ai_controllable = true	
 	end
 		if global.Alien == nil then
 			global.Alien = {}		
@@ -36,8 +37,6 @@ function on_initialize()
 			global.Alien.lords = {}
 		end
 		
-		global.Alien.lords = Initial_Spawn(surface)
-		--global.Alien.lords = tester2(surface)
 		
 		---- Used for EvoGUI
 		if not global.Total_Nest_Count then
@@ -46,12 +45,20 @@ function on_initialize()
 			global.Total_Nest_Count = 0
 		end
 
+		if global.Initial_Aliens == nil then
+			global.Initial_Aliens  = {}
+			global.Initial_Aliens.count = {} 
+		end
+
+		global.Alien.lords = Initial_Spawn(surface)
+		--global.Alien.lords = tester2(surface)
+		
 		
 end
 
 
 
-function on_remove(event)
+local function On_Death(event)
 
 	surface = event.entity.surface
     global.Alien = raisealien(event, global.Alien, surface)
@@ -59,21 +66,71 @@ function on_remove(event)
 end
 
 
-function on_running(event)
 
-    if (event.tick % 360 == 0) then
-       	--writeDebug(global.Alien)
-		--writeDebug(#global.Alien.Horde)
+
+Event.register(defines.events.on_tick, function(event)	
+
+
+    if (event.tick % 440 == 0) then
 		
+		chart_radius = 10
+		local counts = global.Initial_Aliens.count
+		local InitialIndex = 1
+		
+		repeat
+			
+			local count = counts[InitialIndex]
+		
+			if (count ~= nil) and (count.valid) then
+		
+			writeDebug("HA")
+			writeDebug(#counts)
+			writeDebug(InitialIndex)
+			end
+			
+		
+			InitialIndex = InitialIndex + 1
+		until (InitialIndex >= #counts)
+	
+		--[[
+		
+		for i = 1, #global.Initial_Aliens.count do
+		writeDebug(global.Initial_Aliens.count)
+		
+		
+			if global.Initial_Aliens.count.valid and global.Initial_Aliens ~= nil then
+			writeDebug("Was Valid")
+			global.Initial_Aliens.count.set_autonomous()
+			
+			end
+			
+			local surface = game.surfaces['nauvis']
+			for _,force in pairs( game.forces )do
+				force.chart( surface, {{x = global.Initial_Aliens.position.x - chart_radius, y = global.Initial_Aliens.position.y - chart_radius}, {x = global.Initial_Aliens.position.x, y = global.Initial_Aliens.position.y}})
+			end		
+			
+			
+			--global.Initial_Aliens.set_command(defines.command.wander)
+			
+			end
+		
+		end 
+		]]
     end
-end
+end)
+
+
+
 
 
 ---------------------------------------------
 script.on_init(on_initialize)
 
---script.on_event(defines.events.on_tick, on_running)
-script.on_event(defines.events.on_entity_died, on_remove)
+--script.on_event(defines.events.on_entity_died, on_remove)
+
+local death_events = {defines.events.on_entity_died}
+script.on_event(death_events, On_Death)
+
 
 
 

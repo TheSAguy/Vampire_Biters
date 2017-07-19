@@ -200,11 +200,15 @@ data:extend(
       },
       {
         type = "acid",
-        percent = 20,
+        percent = 100,
       },
       {
         type = "poison",
         percent = 20,
+      },
+	  {
+        type = "alien_Kiss",
+        percent = 100,
       },
     },
     healing_per_tick = 0.02,
@@ -212,14 +216,14 @@ data:extend(
     selection_box = {{-3.5, -2.5}, {2.5, 2.5}},
     pollution_absorbtion_absolute = 20,
     pollution_absorbtion_proportional = 0.01,
-    pollution_to_enhance_spawning = 40000,
+    pollution_to_enhance_spawning = 10000,
     corpse = "alien-den-corpse",
     dying_explosion = "blood-explosion-huge",
     loot =
     {
     },
-    max_count_of_owned_units = 5,
-    max_friends_around_to_spawn = 20,
+    max_count_of_owned_units = 10,
+    max_friends_around_to_spawn = 25,
 	--max_count_of_owned_units = 25,
     --max_friends_around_to_spawn = 50,
     
@@ -248,8 +252,8 @@ data:extend(
     -- With zero evolution the spawn rate is 5 seconds, with max evolution it is 2 seconds
     spawning_cooldown = {600, 100},
 	--spawning_cooldown = {300, 120},
-    spawning_radius = 10,
-    spawning_spacing = 3,
+    spawning_radius = 20,
+    spawning_spacing = 5,
     max_spawn_shift = 0,
     max_richness_for_spawn_shift = 100,
     call_for_help_radius = 20

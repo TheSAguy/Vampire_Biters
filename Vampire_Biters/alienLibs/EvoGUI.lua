@@ -20,7 +20,11 @@ EvoGUI = {}
         local text = "Alien Clan Count: " ..#global.Alien.clans
         return text
     end
-    
+
+    function EvoGUI.create_Initial_Count_Text()
+        local text = "Initial Alien Count: " ..#global.Initial_Aliens.count
+        return text
+    end    
 	
     function EvoGUI.setup()
         if remote.interfaces.EvoGUI and remote.interfaces.EvoGUI.create_remote_sensor then
@@ -39,6 +43,13 @@ EvoGUI = {}
                 text = "Alien Clan Count",
                 caption = "Alien Clan Count"
             })		
+
+			remote.call("EvoGUI", "create_remote_sensor", {
+                mod_name = "Aliens",
+                name = "Initial_Alien_Count",
+                text = "Initial Alien Count",
+                caption = "Initial Alien Count"
+            })	
 			
             EvoGUI.update_gui()
         end
@@ -66,6 +77,7 @@ end)
 
         remote.call("EvoGUI", "update_remote_sensor", "Alien_Nest_Count", EvoGUI.create_Nest_Count_Text(), color)
         remote.call("EvoGUI", "update_remote_sensor", "Alien_Clan_Count", EvoGUI.create_Clan_Count_Text(), color)
+		remote.call("EvoGUI", "update_remote_sensor", "Initial_Alien_Count", EvoGUI.create_Initial_Count_Text(), color)
 		
     end
 

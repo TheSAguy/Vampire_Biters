@@ -621,7 +621,7 @@ function raisealien(event, Alien, surface)
 	end
 
 	---- If an Alien unit dies
-    if (event.force ~= nil)  and (entityType == "unit")  then 
+    if (event.force ~= nil)  and (entityType == "unit")  and (event.entity.force.name == "alien") then 
 			
 		--writeDebug("A alien Died")	
 		local AlienName = event.entity.name
@@ -685,6 +685,10 @@ function Spawn_Nest(event)
 		writeDebug("An Alien Nest Spawned")	
 		-- Add the created nest to the table
 		global.Total_Nest_Count = global.Total_Nest_Count + 1
+		
+		for _,force in pairs( game.forces )do
+			force.chart( surface, {{x = SpawnAlienPosition.x - 10, y = SpawnAlienPosition.y - 10}, {x = SpawnAlienPosition.x, y = SpawnAlienPosition.y}})
+		end		
 		
 	end
 			
@@ -810,7 +814,8 @@ function moveclans(Alien, surface)
     local clans = Alien.clans
     local clanIndex = 1
 	writeDebug("Trying to move clans")
-    repeat
+    --[[
+	repeat
         local clan = clans[clanIndex]
         if (clan ~= nil) and (clan.valid) then
             -- check pollution is touching unit group, set_autonomous
@@ -837,4 +842,41 @@ function moveclans(Alien, surface)
         end
         clanIndex = clanIndex + 1
     until (clanIndex >= #clans)
+	]]
+	
+	repeat
+        local clan = clans[clanIndex]
+		local target = nil
+        if (clan ~= nil) and (clan.valid) then
+
+            local radius = 10 + 20 * game.forces.enemy.evolution_factor
+            local closestDistance = -1
+            local closestSpawner = nil			
+			local pos = clan.position		
+			local area = {{pos.x - radius, pos.y - radius}, {pos.x + radius, pos.y + radius}}
+			local spawner = clan.surface.find_entities_filtered({area = area, type = "unit-spawner", force= "enemy"})
+				
+			if #spawner > 0 then
+			--writeDebug("Found a Spawner in range")
+				
+				for _,enemy in pairs(spawner) do
+					if target == nil then
+						target={enemy}
+					end
+				end
+			
+			end			
+			if target ~= nil then
+				
+				clan.set_command({type = defines.command.attack, target = target[1]})
+				
+			end
+
+        end
+        clanIndex = clanIndex + 1
+    until (clanIndex >= #clans)
+	
+	
+	
+	
 end
